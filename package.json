@@ -1,8 +1,10 @@
 {
   "name": "supabase-node-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,6 +16,7 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mongodb": "^6.16.0",
+    "mongoose": "^8.15.0",
     "supabase": "^2.23.4"
   }
 }
