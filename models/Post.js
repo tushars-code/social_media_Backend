@@ -1,9 +1,14 @@
-
 import mongoose from 'mongoose';
 
 const PostSchema = new mongoose.Schema({
-  userId: String,
-  content: String,
+  userId: {
+    type: String,
+    required: true,
+  },
+  content: {
+    type: String,
+    required: true,
+  },
   imageUrl: String,
   createdAt: {
     type: Date,

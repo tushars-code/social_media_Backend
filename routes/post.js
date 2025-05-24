@@ -1,22 +1,39 @@
-import express from "express";
-import clientPromise from "../db.js";
-import { ObjectId } from "mongodb";
+// routes/posts.js
+import express from 'express';
+import Post from '../models/Post.js'; // Ensure path is correct
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  const client = await clientPromise;
-  const posts = await client.db("jobAppDB").collection("posts").find().sort({ createdAt: -1 }).toArray();
-  res.json(posts);
+// GET all posts (sorted by latest first)
+router.get('/', async (req, res) => {
+  try {
+    const posts = await Post.find().sort({ createdAt: -1 });
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch posts' });
+  }
 });
 
-router.post("/", async (req, res) => {
-  const client = await clientPromise;
-  const result = await client.db("jobAppDB").collection("posts").insertOne({
-    ...req.body,
-    createdAt: new Date()
-  });
-  res.status(201).json({ id: result.insertedId });
+// POST a new post
+router.post('/', async (req, res) => {
+  const { userId, content, imageUrl } = req.body;
+
+  if (!userId || !content) {
+    return res.status(400).json({ error: 'userId and content are required' });
+  }
+
+  try {
+    const newPost = new Post({
+      userId,
+      content,
+      imageUrl, // Optional, from Supabase
+    });
+
+    const savedPost = await newPost.save();
+    res.status(201).json({ id: savedPost._id });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create post' });
+  }
 });
 
 export default router;
